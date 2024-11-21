@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
+
 import { CarService } from './car.service';
 import { carValidationSchema } from './car.validation';
+
 import { z } from 'zod';
 
 const createACar = async (req: Request, res: Response) => {
