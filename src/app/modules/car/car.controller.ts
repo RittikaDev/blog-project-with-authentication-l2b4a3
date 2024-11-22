@@ -157,28 +157,30 @@ const getSingleCar = async (req: Request, res: Response) => {
 const updateACar = async (req: Request, res: Response) => {
   try {
     const { carId } = req.params;
-    const { price, quantity } = req.body;
+    const updateData = req.body;
 
-    if (!price && !quantity) {
+    // AT LEAST HAS TO BE PROVIDED
+    if (Object.keys(updateData).length === 0) {
       res.status(400).json({
         success: false,
-        message:
-          'At least one field (price or quantity) is required for update',
+        message: 'At least one field must be provided for update',
       });
     }
 
-    const updateCarData = { price, quantity };
+    const result = await CarService.updateACarIntoDB(carId, updateData);
 
-    const result = await CarService.updateACarIntoDB(carId, updateCarData);
-
-    res.status(200).json({
-      success: true,
-      message: 'Car updated successfully',
-      data: result,
-    });
+    if (!result) {
+      res.status(404).json({
+        success: false,
+        message: 'Car not found',
+      });
+    } else
+      res.status(200).json({
+        success: true,
+        message: 'Car updated successfully',
+        data: result,
+      });
   } catch (err: unknown) {
-    // console.error('Error occurred:', err);
-
     if (err instanceof z.ZodError) {
       const errorMsg = err.errors.map((error) => ({
         path: error.path.join('.'),

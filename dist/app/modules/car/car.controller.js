@@ -151,23 +151,29 @@ const getSingleCar = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 const updateACar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { carId } = req.params;
-        const { price, quantity } = req.body;
-        if (!price && !quantity) {
+        const updateData = req.body;
+        // AT LEAST HAS TO BE PROVIDED
+        if (Object.keys(updateData).length === 0) {
             res.status(400).json({
                 success: false,
-                message: 'At least one field (price or quantity) is required for update',
+                message: 'At least one field must be provided for update',
             });
         }
-        const updateCarData = { price, quantity };
-        const result = yield car_service_1.CarService.updateACarIntoDB(carId, updateCarData);
-        res.status(200).json({
-            success: true,
-            message: 'Car updated successfully',
-            data: result,
-        });
+        const result = yield car_service_1.CarService.updateACarIntoDB(carId, updateData);
+        if (!result) {
+            res.status(404).json({
+                success: false,
+                message: 'Car not found',
+            });
+        }
+        else
+            res.status(200).json({
+                success: true,
+                message: 'Car updated successfully',
+                data: result,
+            });
     }
     catch (err) {
-        // console.error('Error occurred:', err);
         if (err instanceof zod_1.z.ZodError) {
             const errorMsg = err.errors.map((error) => ({
                 path: error.path.join('.'),

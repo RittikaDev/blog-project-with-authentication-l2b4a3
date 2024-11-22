@@ -36,7 +36,6 @@ const getSingleCarFromDB = (id) => __awaiter(void 0, void 0, void 0, function* (
 });
 const updateACarIntoDB = (carId, updateCarData) => __awaiter(void 0, void 0, void 0, function* () {
     const parsedCarData = car_validation_1.carValidationSchema.partial().parse(updateCarData);
-    // Update the car in the database
     const result = yield car_model_1.CarModel.findByIdAndUpdate({ _id: carId }, parsedCarData, { new: true, runValidators: true });
     return result;
 });

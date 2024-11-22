@@ -34,7 +34,6 @@ const updateACarIntoDB = async (
 ) => {
   const parsedCarData = carValidationSchema.partial().parse(updateCarData);
 
-  // Update the car in the database
   const result = await CarModel.findByIdAndUpdate(
     { _id: carId },
     parsedCarData,
