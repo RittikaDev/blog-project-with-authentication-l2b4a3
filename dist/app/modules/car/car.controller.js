@@ -66,11 +66,19 @@ const getAllCars = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         const { searchTerm } = req.query;
         const result = yield car_service_1.CarService.getAllCarsFromDB(searchTerm);
-        res.status(200).json({
-            success: true,
-            message: 'Cars retreived successfully!',
-            data: result,
-        });
+        if (result.length > 0) {
+            res.status(200).json({
+                success: true,
+                message: 'Cars retreived successfully!',
+                data: result,
+            });
+        }
+        else
+            res.status(404).json({
+                success: false,
+                message: 'No cars found.',
+                data: null,
+            });
     }
     catch (err) {
         if (err instanceof Error) {
@@ -101,11 +109,19 @@ const getSingleCar = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     try {
         const { carId } = req.params;
         const result = yield car_service_1.CarService.getSingleCarFromDB(carId);
-        res.status(200).json({
-            success: true,
-            message: 'Single car retreived successfully!',
-            data: result,
-        });
+        if (result != null) {
+            res.status(200).json({
+                success: true,
+                message: 'Single car retreived successfully!',
+                data: result,
+            });
+        }
+        else
+            res.status(404).json({
+                success: false,
+                message: 'No cars found.',
+                data: null,
+            });
     }
     catch (err) {
         if (err instanceof Error) {

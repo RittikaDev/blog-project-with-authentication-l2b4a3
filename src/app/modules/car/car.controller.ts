@@ -75,11 +75,18 @@ const getAllCars = async (req: Request, res: Response) => {
     const { searchTerm } = req.query;
     const result = await CarService.getAllCarsFromDB(searchTerm as string);
 
-    res.status(200).json({
-      success: true,
-      message: 'Cars retreived successfully!',
-      data: result,
-    });
+    if (result.length > 0) {
+      res.status(200).json({
+        success: true,
+        message: 'Cars retreived successfully!',
+        data: result,
+      });
+    } else
+      res.status(404).json({
+        success: false,
+        message: 'No cars found.',
+        data: null,
+      });
   } catch (err: unknown) {
     if (err instanceof Error) {
       res.status(500).json({
@@ -110,11 +117,18 @@ const getSingleCar = async (req: Request, res: Response) => {
     const { carId } = req.params;
     const result = await CarService.getSingleCarFromDB(carId);
 
-    res.status(200).json({
-      success: true,
-      message: 'Single car retreived successfully!',
-      data: result,
-    });
+    if (result != null) {
+      res.status(200).json({
+        success: true,
+        message: 'Single car retreived successfully!',
+        data: result,
+      });
+    } else
+      res.status(404).json({
+        success: false,
+        message: 'No cars found.',
+        data: null,
+      });
   } catch (err: unknown) {
     if (err instanceof Error) {
       res.status(500).json({

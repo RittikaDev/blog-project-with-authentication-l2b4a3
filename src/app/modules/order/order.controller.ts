@@ -43,13 +43,24 @@ const getRevenue = async (req: Request, res: Response) => {
   try {
     const totalRevenue = await OrderService.calculateTotalRevenue();
 
-    res.status(200).json({
-      success: true,
-      message: 'Revenue calculated successfully',
-      data: {
-        totalRevenue: totalRevenue,
-      },
-    });
+    // console.log(totalRevenue);
+
+    if (totalRevenue === 0) {
+      res.status(200).json({
+        success: true,
+        message: 'Revenue is 0, no sales recorded.',
+        data: {
+          totalRevenue: totalRevenue,
+        },
+      });
+    } else
+      res.status(200).json({
+        success: true,
+        message: 'Revenue calculated successfully',
+        data: {
+          totalRevenue: totalRevenue,
+        },
+      });
   } catch (err: unknown) {
     if (err instanceof z.ZodError) {
       const errorMsg = err.errors.map((error) => ({

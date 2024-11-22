@@ -48,13 +48,24 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 const getRevenue = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const totalRevenue = yield order_service_1.OrderService.calculateTotalRevenue();
-        res.status(200).json({
-            success: true,
-            message: 'Revenue calculated successfully',
-            data: {
-                totalRevenue: totalRevenue,
-            },
-        });
+        // console.log(totalRevenue);
+        if (totalRevenue === 0) {
+            res.status(200).json({
+                success: true,
+                message: 'Revenue is 0, no sales recorded.',
+                data: {
+                    totalRevenue: totalRevenue,
+                },
+            });
+        }
+        else
+            res.status(200).json({
+                success: true,
+                message: 'Revenue calculated successfully',
+                data: {
+                    totalRevenue: totalRevenue,
+                },
+            });
     }
     catch (err) {
         if (err instanceof zod_1.z.ZodError) {
