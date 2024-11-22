@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import path from 'path';
 
-dotenv.config({ path: path.join((process.cwd(), '.env')) }); // ACCESSING ENV FILE
+dotenv.config({ path: path.join(process.cwd(), '.env') }); // ACCESSING ENV FILE
 
 export default {
   port: process.env.PORT || 5000,
