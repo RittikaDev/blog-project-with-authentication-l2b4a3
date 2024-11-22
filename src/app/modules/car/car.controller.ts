@@ -5,6 +5,15 @@ import { carValidationSchema } from './car.validation';
 
 import { z } from 'zod';
 
+type ValidationErrorDetail = {
+  message: string;
+  name: string;
+  properties: {
+    message: string;
+    path: string;
+  };
+};
+
 const createACar = async (req: Request, res: Response) => {
   try {
     const { car: carData } = req.body;
@@ -34,7 +43,7 @@ const createACar = async (req: Request, res: Response) => {
           };
           return acc;
         },
-        {} as Record<string, any>,
+        {} as Record<string, ValidationErrorDetail>,
       );
 
       res.status(400).json({
@@ -106,7 +115,29 @@ const getSingleCar = async (req: Request, res: Response) => {
       message: 'Single car retreived successfully!',
       data: result,
     });
-  } catch (err) {}
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      res.status(500).json({
+        message: 'An error occurred while fetching one single cars',
+        success: false,
+        error: {
+          name: err.name,
+          message: err.message,
+          stack: err.stack,
+        },
+      });
+    } else {
+      res.status(500).json({
+        message: 'An unexpected error occurred',
+        success: false,
+        error: {
+          name: 'UnknownError',
+          message: 'An unknown error occurred',
+          stack: 'No stack trace available',
+        },
+      });
+    }
+  }
 };
 
 const updateACar = async (req: Request, res: Response) => {
@@ -132,7 +163,7 @@ const updateACar = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err: unknown) {
-    console.error('Error occurred:', err);
+    // console.error('Error occurred:', err);
 
     if (err instanceof z.ZodError) {
       const errorMsg = err.errors.map((error) => ({

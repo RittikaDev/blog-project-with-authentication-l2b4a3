@@ -1,7 +1,6 @@
 import { carValidationSchema } from './car.validation';
 import { ICar } from './car.interface';
 import { CarModel } from './car.model';
-import { z } from 'zod';
 
 const createCarIntoDB = async (car: ICar) => {
   const result = await CarModel.create(car);

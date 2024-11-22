@@ -14,12 +14,14 @@ export default [
       },
     },
   },
-  { languageOptions: { globals: globals.node } },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
-  eslintPluginPrettierRecommended,
+
   {
     ignores: ['node_modules*', 'dist'],
+    plugins: {
+      prettier: eslintPluginPrettierRecommended,
+    },
     rules: {
       'no-unused-vars': 'error',
       'no-unused-expressions': 'error',
