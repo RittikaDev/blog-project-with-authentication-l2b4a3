@@ -48,12 +48,23 @@ npm install
 
 Set up environment variables:
 
-- Create a .env file in the project root and configure your secret keys
+- Create a .env file in the project root and configure secret keys
+
+```bash
+PORT=5000
+DATABASE_URL=mongodb+srv://rittikadev:rittikaadmin1234@cluster0.729wj.mongodb.net/assignment-two?retryWrites=true&w=majority&appName=Cluster0
+```
 
 Run the application:
 
 ```bash
 npm run start:dev
+```
+
+Build the application:
+
+```bash
+npm run build
 ```
 
 API Documentation
