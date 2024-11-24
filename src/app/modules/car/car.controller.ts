@@ -205,11 +205,11 @@ const updateACar = async (req: Request, res: Response) => {
 const deleteACar = async (req: Request, res: Response) => {
   try {
     const { carId } = req.params;
-    const result = await CarService.deleteACarFromDB(carId);
+    await CarService.deleteACarFromDB(carId);
     res.status(200).json({
       success: true,
       message: 'Car deleted successfully!',
-      data: result,
+      data: {},
     });
   } catch (err: unknown) {
     // console.error('Error occurred:', err);
