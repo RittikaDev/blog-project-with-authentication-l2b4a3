@@ -68,8 +68,8 @@ const getAllCars = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const result = yield car_service_1.CarService.getAllCarsFromDB(searchTerm);
         if (result.length > 0) {
             res.status(200).json({
-                success: true,
-                message: 'Cars retreived successfully!',
+                message: 'Cars retrieved successfully',
+                status: true,
                 data: result,
             });
         }
@@ -111,8 +111,8 @@ const getSingleCar = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const result = yield car_service_1.CarService.getSingleCarFromDB(carId);
         if (result != null) {
             res.status(200).json({
-                success: true,
-                message: 'Single car retreived successfully!',
+                message: 'Car retrieved successfully',
+                status: true,
                 data: result,
             });
         }
@@ -168,8 +168,8 @@ const updateACar = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         }
         else
             res.status(200).json({
-                success: true,
                 message: 'Car updated successfully',
+                status: true,
                 data: result,
             });
     }
@@ -197,11 +197,11 @@ const updateACar = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 const deleteACar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { carId } = req.params;
-        const result = yield car_service_1.CarService.deleteACarFromDB(carId);
+        yield car_service_1.CarService.deleteACarFromDB(carId);
         res.status(200).json({
-            success: true,
-            message: 'Car deleted successfully!',
-            data: result,
+            message: 'Car deleted successfully',
+            status: true,
+            data: {},
         });
     }
     catch (err) {

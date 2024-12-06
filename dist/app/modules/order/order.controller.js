@@ -20,7 +20,7 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const order = yield order_service_1.OrderService.createOrder(zodOrderData);
         res.status(201).json({
             message: 'Order created successfully',
-            success: true,
+            status: true,
             data: order,
         });
     }
@@ -51,8 +51,8 @@ const getRevenue = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         // console.log(totalRevenue);
         if (totalRevenue === 0) {
             res.status(200).json({
-                success: true,
                 message: 'Revenue is 0, no sales recorded.',
+                status: true,
                 data: {
                     totalRevenue: totalRevenue,
                 },
@@ -60,8 +60,8 @@ const getRevenue = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         }
         else
             res.status(200).json({
-                success: true,
                 message: 'Revenue calculated successfully',
+                status: true,
                 data: {
                     totalRevenue: totalRevenue,
                 },
