@@ -18,6 +18,7 @@ const carSchema = new Schema<ICar>(
   },
   {
     timestamps: true, // TO AUTOMATICALLY CREATE createdAt AND updatedAt FIELDS
+    versionKey: false, // Exclude __v field
   },
 );
 

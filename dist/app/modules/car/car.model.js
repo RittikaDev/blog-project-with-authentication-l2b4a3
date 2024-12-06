@@ -17,5 +17,6 @@ const carSchema = new mongoose_1.Schema({
     inStock: { type: Boolean, required: true },
 }, {
     timestamps: true, // TO AUTOMATICALLY CREATE createdAt AND updatedAt FIELDS
+    versionKey: false, // Exclude __v field
 });
 exports.CarModel = (0, mongoose_1.model)('Car', carSchema);

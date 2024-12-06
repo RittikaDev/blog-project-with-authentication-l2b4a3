@@ -8,7 +8,10 @@ const orderSchema = new Schema<IOrder>(
     quantity: { type: Number, required: true, min: 1 },
     totalPrice: { type: Number, required: true, min: 0 }, // TOTAL PRICE = price * quantity
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+    versionKey: false, // Exclude __v field
+  },
 );
 
 export const OrderModel = model<IOrder>('Order', orderSchema);
