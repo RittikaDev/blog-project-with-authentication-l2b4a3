@@ -77,8 +77,8 @@ const getAllCars = async (req: Request, res: Response) => {
 
     if (result.length > 0) {
       res.status(200).json({
-        success: true,
-        message: 'Cars retreived successfully!',
+        message: 'Cars retrieved successfully',
+        status: true,
         data: result,
       });
     } else
@@ -119,8 +119,8 @@ const getSingleCar = async (req: Request, res: Response) => {
 
     if (result != null) {
       res.status(200).json({
-        success: true,
-        message: 'Single car retreived successfully!',
+        message: 'Car retrieved successfully',
+        status: true,
         data: result,
       });
     } else
@@ -176,8 +176,8 @@ const updateACar = async (req: Request, res: Response) => {
       });
     } else
       res.status(200).json({
-        success: true,
         message: 'Car updated successfully',
+        status: true,
         data: result,
       });
   } catch (err: unknown) {
@@ -207,8 +207,8 @@ const deleteACar = async (req: Request, res: Response) => {
     const { carId } = req.params;
     await CarService.deleteACarFromDB(carId);
     res.status(200).json({
-      success: true,
-      message: 'Car deleted successfully!',
+      message: 'Car deleted successfully',
+      status: true,
       data: {},
     });
   } catch (err: unknown) {

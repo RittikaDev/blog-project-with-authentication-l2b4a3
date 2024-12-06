@@ -14,7 +14,7 @@ const createOrder = async (req: Request, res: Response) => {
 
     res.status(201).json({
       message: 'Order created successfully',
-      success: true,
+      status: true,
       data: order,
     });
   } catch (err: unknown) {
@@ -47,16 +47,16 @@ const getRevenue = async (req: Request, res: Response) => {
 
     if (totalRevenue === 0) {
       res.status(200).json({
-        success: true,
         message: 'Revenue is 0, no sales recorded.',
+        status: true,
         data: {
           totalRevenue: totalRevenue,
         },
       });
     } else
       res.status(200).json({
-        success: true,
         message: 'Revenue calculated successfully',
+        status: true,
         data: {
           totalRevenue: totalRevenue,
         },
