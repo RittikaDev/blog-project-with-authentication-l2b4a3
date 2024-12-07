@@ -128,3 +128,7 @@ car-store-B4A2V3/
 ├── tsconfig.json
 └── README.md
 ```
+
+### Known Issues
+- Response Structure Update:
+During the initial submission for recheck, a minor inconsistency was still present in the API response structure that I later realized. This issue has now been fixed and redeployed.
