@@ -129,14 +129,9 @@ const getSingleCar = async (req: Request, res: Response) => {
       });
   } catch (err: unknown) {
     if (err instanceof Error) {
-      res.status(500).json({
-        message: 'An error occurred while fetching one single cars',
+      res.status(404).json({
         success: false,
-        error: {
-          name: err.name,
-          message: err.message,
-          stack: err.stack,
-        },
+        message: 'Car not found',
       });
     } else {
       res.status(500).json({
@@ -163,6 +158,13 @@ const updateACar = async (req: Request, res: Response) => {
         success: false,
         message: 'At least one field must be provided for update',
       });
+      return;
+    } else if (!updateData.price || !updateData.quantity) {
+      res.status(400).json({
+        success: false,
+        message: 'Price and quantity must be provided',
+      });
+      return;
     }
 
     const result = await CarService.updateACarIntoDB(carId, updateData);
@@ -189,6 +191,11 @@ const updateACar = async (req: Request, res: Response) => {
         success: false,
         message: 'Validation error',
         errors: errorMsg,
+      });
+    } else if (err instanceof Error) {
+      res.status(404).json({
+        success: false,
+        message: 'Car not found',
       });
     } else {
       res.status(500).json({
@@ -222,6 +229,11 @@ const deleteACar = async (req: Request, res: Response) => {
         success: false,
         message: 'Validation error',
         errors: errorMsg,
+      });
+    } else if (err instanceof Error) {
+      res.status(404).json({
+        success: false,
+        message: 'Car not found',
       });
     } else {
       res.status(500).json({
