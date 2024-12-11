@@ -36,11 +36,16 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 errors: errorMsg,
             });
         }
+        else if (err instanceof Error) {
+            res.status(404).json({
+                success: false,
+                message: 'Car not found',
+            });
+        }
         else {
             res.status(500).json({
                 success: false,
-                message: 'An error occurred while creating the order',
-                error: err.message || 'Unknown error',
+                message: 'An unexpected error occurred',
             });
         }
     }

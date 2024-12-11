@@ -16,10 +16,8 @@ type ValidationErrorDetail = {
 
 const createACar = async (req: Request, res: Response) => {
   try {
-    const { car: carData } = req.body;
-
     // VALIDATION USING ZOD
-    const zodParsedCarData = carValidationSchema.parse(carData);
+    const zodParsedCarData = carValidationSchema.parse(req.body);
 
     const result = await CarService.createCarIntoDB(zodParsedCarData);
 

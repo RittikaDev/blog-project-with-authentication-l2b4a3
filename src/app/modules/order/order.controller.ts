@@ -23,17 +23,20 @@ const createOrder = async (req: Request, res: Response) => {
         path: error.path.join('.'),
         errorMessage: error.message,
       }));
-
       res.status(400).json({
         success: false,
         message: 'Validation error',
         errors: errorMsg,
       });
+    } else if (err instanceof Error) {
+      res.status(404).json({
+        success: false,
+        message: 'Car not found',
+      });
     } else {
       res.status(500).json({
         success: false,
-        message: 'An error occurred while creating the order',
-        error: (err as Error).message || 'Unknown error',
+        message: 'An unexpected error occurred',
       });
     }
   }

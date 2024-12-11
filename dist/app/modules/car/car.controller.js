@@ -15,9 +15,8 @@ const car_validation_1 = require("./car.validation");
 const zod_1 = require("zod");
 const createACar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { car: carData } = req.body;
         // VALIDATION USING ZOD
-        const zodParsedCarData = car_validation_1.carValidationSchema.parse(carData);
+        const zodParsedCarData = car_validation_1.carValidationSchema.parse(req.body);
         const result = yield car_service_1.CarService.createCarIntoDB(zodParsedCarData);
         res.status(200).json({
             message: 'Car created successfully',
