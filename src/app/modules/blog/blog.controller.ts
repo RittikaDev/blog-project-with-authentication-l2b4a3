@@ -8,126 +8,93 @@ import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 
 import httpStatus from 'http-status-codes';
+import AppError from '../../errors/AppError';
+import { User } from '../user/user.model';
 
 const createblog = catchAsync(async (req: Request, res: Response) => {
   const author = req.user;
-  console.log(author);
-  const { title, content } = req.body;
+  // console.log(author);
+  const blogData = req.body;
 
-  const blog = await BlogService.createblog({ title, content }, author?._id);
+  if (!author || !author.userEmail) {
+    throw new AppError(httpStatus.UNAUTHORIZED, 'User information is missing.');
+  }
+
+  const user = await User.findOne({ email: author.userEmail });
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found.');
+  }
+  // console.log(user);
+
+  const blogPayload = {
+    title: blogData.title,
+    content: blogData.content,
+    author: user._id,
+    isPublished: true,
+  };
+
+  // Check if the title and content are provided
+  if (!blogData.title || !blogData.content) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Title and content are required.',
+    );
+  }
+
+  const result = await BlogService.createBlogIntoDB(blogPayload);
 
   sendResponse(res, {
+    statusCode: httpStatus.CREATED,
     success: true,
     message: 'Blog created successfully',
-    statusCode: httpStatus.CREATED,
-    data: blog,
+    data: result,
   });
 });
 
-const getRevenue = catchAsync(async (req: Request, res: Response) => {
-  const totalRevenue = await BlogService.calculateTotalRevenue();
-
-  if (totalRevenue === 0) {
+const updateBlog = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const updateData = req.body;
+  const result = await BlogService.updateBlogIntoDB(id, updateData);
+  if (!result) {
     sendResponse(res, {
-      statusCode: httpStatus.OK,
+      statusCode: httpStatus.NOT_FOUND,
       success: false,
-      message: 'Revenue is 0, no sales recorded.',
+      message: 'No Data Found',
       data: [],
     });
-  } else
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: false,
-      message: 'Revenue calculated successfully',
-      data: {
-        totalRevenue: totalRevenue,
-      },
-    });
+  }
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Blog updated successfully',
+    data: result,
+  });
 });
 
-// ----------------------------- BEFORE -------------------------------------------
-// const createblog = async (req: Request, res: Response) => {
-//   try {
-//     // VALIDATION USING ZOD
-//     // const zodblogData = blogValidationSchema.CreateblogValidationSchema.parse(req.body);
+const deleteABlog = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  console.log(req.params);
+  const result = await BlogService.deleteABlogFromDB(id);
 
-//     const blog = await BlogService.createblog(req.body);
+  if (!result) {
+    sendResponse(res, {
+      statusCode: httpStatus.NOT_FOUND,
+      success: false,
+      message: 'No Data Found',
+      data: [],
+    });
+  }
 
-//     res.status(201).json({
-//       message: 'blog created successfully',
-//       status: true,
-//       data: blog,
-//     });
-//   } catch (err: unknown) {
-//     if (err instanceof z.ZodError) {
-//       const errorMsg = err.errors.map((error) => ({
-//         path: error.path.join('.'),
-//         errorMessage: error.message,
-//       }));
-//       res.status(400).json({
-//         success: false,
-//         message: 'Validation error',
-//         errors: errorMsg,
-//       });
-//     } else if (err instanceof Error) {
-//       res.status(404).json({
-//         success: false,
-//         message: 'Car not found',
-//       });
-//     } else {
-//       res.status(500).json({
-//         success: false,
-//         message: 'An unexpected error occurred',
-//       });
-//     }
-//   }
-// };
-
-// const getRevenue = async (req: Request, res: Response) => {
-//   try {
-//     const totalRevenue = await BlogService.calculateTotalRevenue();
-
-//     // console.log(totalRevenue);
-
-//     if (totalRevenue === 0) {
-//       res.status(200).json({
-//         message: 'Revenue is 0, no sales recorded.',
-//         status: true,
-//         data: {
-//           totalRevenue: totalRevenue,
-//         },
-//       });
-//     } else
-//       res.status(200).json({
-//         message: 'Revenue calculated successfully',
-//         status: true,
-//         data: {
-//           totalRevenue: totalRevenue,
-//         },
-//       });
-//   } catch (err: unknown) {
-//     if (err instanceof z.ZodError) {
-//       const errorMsg = err.errors.map((error) => ({
-//         path: error.path.join('.'),
-//         errorMessage: error.message,
-//       }));
-
-//       res.status(400).json({
-//         success: false,
-//         message: 'Validation error',
-//         errors: errorMsg,
-//       });
-//     } else {
-//       res.status(500).json({
-//         success: false,
-//         message: 'An error occurred while calculating the total revenue',
-//         error: (err as Error).message || 'Unknown error',
-//       });
-//     }
-//   }
-// };
+  sendResponse(res, {
+    success: true,
+    message: 'Blog deleted successfully',
+    statusCode: 200,
+  });
+});
 
 export const blogController = {
   createblog,
-  getRevenue,
+  updateBlog,
+  deleteABlog,
 };

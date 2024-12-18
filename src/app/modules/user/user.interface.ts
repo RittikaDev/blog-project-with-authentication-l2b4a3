@@ -3,6 +3,7 @@ import { Model } from 'mongoose';
 export type TRole = 'admin' | 'user';
 
 export type TUser = {
+  toObject(): { [x: string]: unknown; password: unknown };
   name: string;
   email: string;
   password?: string;

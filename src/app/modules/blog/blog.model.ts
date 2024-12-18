@@ -1,11 +1,11 @@
-import { Schema, Types, model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { IBlog } from './blog.interface';
 
 const blogSchema = new Schema<IBlog>(
   {
     title: { type: String, required: true },
     content: { type: String, required: true },
-    author: { type: Types.ObjectId, ref: 'User' },
+    author: { type: Schema.Types.ObjectId, ref: 'User' },
     isPublished: { type: Boolean, default: true },
   },
   {

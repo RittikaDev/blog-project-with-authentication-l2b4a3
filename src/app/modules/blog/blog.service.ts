@@ -1,61 +1,49 @@
+import { IBlog } from './blog.interface';
 import { BlogModel } from './blog.model';
 
-const createblog = async (
-  blogData: { title: string; content: string },
-  authorId: string,
-) => {
-  // Create a new blog document
-  const newBlog = new BlogModel({
-    title: blogData.title,
-    content: blogData.content,
-    author: authorId,
-    isPublished: true,
-  });
+import AppError from '../../errors/AppError';
+import httpStatus from 'http-status-codes';
 
-  await newBlog.save();
+const createBlogIntoDB = async (payload: IBlog) => {
+  // Create a new blog entry
+  const blog = await BlogModel.create(payload);
 
-  const populatedBlog = await newBlog.populate('author');
+  // Populate the 'author' field after creating the blog entry
+  const populatedBlog = await BlogModel.findById(blog._id)
+    .populate('author', ' -createdAt -updatedAt')
+    .select('-isPublished -createdAt -updatedAt');
+
   return populatedBlog;
 };
 
-export const calculateTotalRevenue = async () => {
-  // MongoDB AGGREGATION PIPELINE
-  const revenueData = await BlogModel.aggregate([
-    {
-      $lookup: {
-        from: 'cars', // REFERENCE TO 'CARS' COLLECTION
-        localField: 'car', // FIELD OF THE blog COLLECTION THAT IS REFERENCING THE CAR COLLECTION
-        foreignField: '_id',
-        as: 'carDetails',
-      },
-    },
-    {
-      $unwind: '$carDetails', // EXPECTING ONLY ONE MATCH, THAT'S WHY $unwind
-    },
-    {
-      $match: {
-        'carDetails.quantity': { $gt: 0 }, // CAR QUANTITY HAS TO BE MORE THAT 0
-      },
-    },
-    {
-      $project: {
-        totalRevenue: {
-          $multiply: ['$quantity', '$carDetails.price'],
-        },
-      },
-    },
-    {
-      $group: {
-        _id: null,
-        totalRevenue: { $sum: '$totalRevenue' },
-      },
-    },
-  ]);
+const updateBlogIntoDB = async (id: string, payload: Partial<IBlog>) => {
+  const isServiceExists = await BlogModel.findById(id);
+  if (!isServiceExists) {
+    throw new AppError(httpStatus.NOT_FOUND, 'This blog is not found');
+  }
 
-  return revenueData[0] ? revenueData[0].totalRevenue : 0;
+  const { ...remainingServiceData } = payload;
+  const modifiedUpdateData: Record<string, unknown> = {
+    ...remainingServiceData,
+  };
+
+  const result = await BlogModel.findByIdAndUpdate(id, modifiedUpdateData, {
+    new: true,
+    runValidators: true,
+  })
+    .populate('author', ' -createdAt -updatedAt')
+    .select('-isPublished -createdAt -updatedAt');
+
+  return result;
+};
+
+const deleteABlogFromDB = async (id: string) => {
+  const result = await BlogModel.deleteOne({ _id: id });
+  return result;
 };
 
 export const BlogService = {
-  createblog,
-  calculateTotalRevenue,
+  createBlogIntoDB,
+  updateBlogIntoDB,
+  deleteABlogFromDB,
 };
