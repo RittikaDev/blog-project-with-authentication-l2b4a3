@@ -9,19 +9,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OrderController = void 0;
-const order_validation_1 = require("./order.validation");
-const order_service_1 = require("./order.service");
+exports.blogController = void 0;
+const blog_validation_1 = require("./blog.validation");
+const blog_service_1 = require("./blog.service");
 const zod_1 = require("zod");
-const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createblog = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // VALIDATION USING ZOD
-        const zodOrderData = order_validation_1.orderValidationSchema.parse(req.body);
-        const order = yield order_service_1.OrderService.createOrder(zodOrderData);
+        const zodblogData = blog_validation_1.blogValidationSchema.parse(req.body);
+        const blog = yield blog_service_1.blogService.createblog(zodblogData);
         res.status(201).json({
-            message: 'Order created successfully',
+            message: 'blog created successfully',
             status: true,
-            data: order,
+            data: blog,
         });
     }
     catch (err) {
@@ -52,7 +52,7 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 const getRevenue = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const totalRevenue = yield order_service_1.OrderService.calculateTotalRevenue();
+        const totalRevenue = yield blog_service_1.blogService.calculateTotalRevenue();
         // console.log(totalRevenue);
         if (totalRevenue === 0) {
             res.status(200).json({
@@ -93,7 +93,7 @@ const getRevenue = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         }
     }
 });
-exports.OrderController = {
-    createOrder,
+exports.blogController = {
+    createblog,
     getRevenue,
 };

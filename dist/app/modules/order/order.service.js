@@ -9,39 +9,39 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OrderService = exports.calculateTotalRevenue = void 0;
+exports.blogService = exports.calculateTotalRevenue = void 0;
 const car_model_1 = require("../car/car.model");
-const order_model_1 = require("./order.model");
-const createOrder = (orderData) => __awaiter(void 0, void 0, void 0, function* () {
+const blog_model_1 = require("./blog.model");
+const createblog = (blogData) => __awaiter(void 0, void 0, void 0, function* () {
     // CHECKING IF CAR EXISTS
-    const car = yield car_model_1.CarModel.findById(orderData.car);
+    const car = yield car_model_1.CarModel.findById(blogData.car);
     if (!car)
         throw new Error('Car not found');
-    if (car.quantity < orderData.quantity) {
+    if (car.quantity < blogData.quantity) {
         throw new Error('Insufficient stock available');
     }
-    // REDUCING THE CAR QUANTITY EACH TIME AN ORDER IS PLACED
-    car.quantity -= orderData.quantity;
+    // REDUCING THE CAR QUANTITY EACH TIME AN blog IS PLACED
+    car.quantity -= blogData.quantity;
     // IF quantity = 0 THEN, inStock WILL BE false
     if (car.quantity === 0)
         car.inStock = false;
     yield car.save(); // SAVE CAR
-    const newOrder = new order_model_1.OrderModel({
-        email: orderData.email,
-        car: orderData.car,
-        quantity: orderData.quantity,
-        totalPrice: orderData.totalPrice,
+    const newblog = new blog_model_1.blogModel({
+        email: blogData.email,
+        car: blogData.car,
+        quantity: blogData.quantity,
+        totalPrice: blogData.totalPrice,
     });
-    yield newOrder.save(); // SAVE ORDER
-    return newOrder;
+    yield newblog.save(); // SAVE blog
+    return newblog;
 });
 const calculateTotalRevenue = () => __awaiter(void 0, void 0, void 0, function* () {
     // MongoDB AGGREGATION PIPELINE
-    const revenueData = yield order_model_1.OrderModel.aggregate([
+    const revenueData = yield blog_model_1.blogModel.aggregate([
         {
             $lookup: {
                 from: 'cars', // REFERENCE TO 'CARS' COLLECTION
-                localField: 'car', // FIELD OF THE ORDER COLLECTION THAT IS REFERENCING THE CAR COLLECTION
+                localField: 'car', // FIELD OF THE blog COLLECTION THAT IS REFERENCING THE CAR COLLECTION
                 foreignField: '_id',
                 as: 'carDetails',
             },
@@ -71,7 +71,7 @@ const calculateTotalRevenue = () => __awaiter(void 0, void 0, void 0, function* 
     return revenueData[0] ? revenueData[0].totalRevenue : 0;
 });
 exports.calculateTotalRevenue = calculateTotalRevenue;
-exports.OrderService = {
-    createOrder,
+exports.blogService = {
+    createblog,
     calculateTotalRevenue: exports.calculateTotalRevenue,
 };

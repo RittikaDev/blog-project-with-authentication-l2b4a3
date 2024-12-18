@@ -1,4 +1,4 @@
-import { carValidationSchema } from './car.validation';
+// import { CarValidationSchema } from './car.validation';
 import { ICar } from './car.interface';
 import { CarModel } from './car.model';
 
@@ -32,11 +32,13 @@ const updateACarIntoDB = async (
   carId: string,
   updateCarData: Partial<ICar>,
 ) => {
-  const parsedCarData = carValidationSchema.partial().parse(updateCarData);
+  // const parsedCarData = CarValidationSchema.createCarValidationSchema
+  //   .partial()
+  //   .parse(updateCarData);
 
   const result = await CarModel.findByIdAndUpdate(
     { _id: carId },
-    parsedCarData,
+    updateCarData,
     { new: true, runValidators: true },
   );
   return result;

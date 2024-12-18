@@ -1,6 +1,6 @@
 ## Car Store B4A2V3
 
-A Node-Express application to manage a car store and process customer orders. The application supports features such as adding and updating car details, managing orders, and calculating revenue using MongoDB aggregation pipelines.
+A Node-Express application to manage a car store and process customer blogs. The application supports features such as adding and updating car details, managing blogs, and calculating revenue using MongoDB aggregation pipelines.
 
 ## Features
 
@@ -10,16 +10,16 @@ A Node-Express application to manage a car store and process customer orders. Th
 - Update car details including price, quantity, and availability status.
 - Automatically update car availability (inStock) based on inventory quantity.
 
-### Order Management:
+### blog Management:
 
-- Place orders for cars with validation of inventory stock.
-- Calculate the total price for orders dynamically.
+- Place blogs for cars with validation of inventory stock.
+- Calculate the total price for blogs dynamically.
 - Handle scenarios like insufficient stock with user-friendly error messages.
 
 ### Revenue Calculation:
 
-- Compute total revenue from orders using MongoDB aggregation pipelines.
-- Ensure accurate revenue tracking by validating stock availability during order placement.
+- Compute total revenue from blogs using MongoDB aggregation pipelines.
+- Ensure accurate revenue tracking by validating stock availability during blog placement.
 
 ## Getting Started
 
@@ -88,13 +88,13 @@ API Documentation
 - Delete a Car
   - DELETE /api/cars/:carId
 
-#### Order Management
+#### blog Management
 
-- Create an Order:
-  - POST /api/orders
+- Create an blog:
+  - POST /api/blogs
   - Request Body: { "email": "customer@example.com", "car": "<carId>", "quantity": 1, "totalPrice": 50000 }
 - Get Total Revenue
-  - GET /api/orders/revenue
+  - GET /api/blogs/revenue
 
 ## Project Structure
 
@@ -111,13 +111,13 @@ car-store-B4A2V3/
 │   │   │   │   ├── car.interface.ts
 │   │   │   │   └── car.validation.ts
 │   │   │   │
-│   │   │   ├── order/
-│   │   │   │   ├── order.controllers.ts
-│   │   │   │   ├── order.model.ts
-│   │   │   │   ├── order.route.ts
-│   │   │   │   ├── order.service.ts
-│   │   │   │   ├── order.interface.ts
-│   │   │   │   └── order.validation.ts
+│   │   │   ├── blog/
+│   │   │   │   ├── blog.controllers.ts
+│   │   │   │   ├── blog.model.ts
+│   │   │   │   ├── blog.route.ts
+│   │   │   │   ├── blog.service.ts
+│   │   │   │   ├── blog.interface.ts
+│   │   │   │   └── blog.validation.ts
 │   │   ├─── config/
 │   │       └── index.ts
 │   ├── app.ts
@@ -130,5 +130,6 @@ car-store-B4A2V3/
 ```
 
 ### Known Issues
+
 - Response Structure Update:
-During the initial submission for recheck, a minor inconsistency was still present in the API response structure that I later realized. This issue has now been fixed and redeployed.
+  During the initial submission for recheck, a minor inconsistency was still present in the API response structure that I later realized. This issue has now been fixed and redeployed.

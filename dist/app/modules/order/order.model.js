@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OrderModel = void 0;
+exports.blogModel = void 0;
 const mongoose_1 = require("mongoose");
-const orderSchema = new mongoose_1.Schema({
+const blogSchema = new mongoose_1.Schema({
     email: { type: String, required: true },
     car: { type: mongoose_1.Types.ObjectId, ref: 'Car', required: true }, // REFERENCE TO THE CAR COLLECTION
     quantity: { type: Number, required: true, min: 1 },
@@ -11,4 +11,4 @@ const orderSchema = new mongoose_1.Schema({
     timestamps: true,
     versionKey: false, // Exclude __v field
 });
-exports.OrderModel = (0, mongoose_1.model)('Order', orderSchema);
+exports.blogModel = (0, mongoose_1.model)('blog', blogSchema);
