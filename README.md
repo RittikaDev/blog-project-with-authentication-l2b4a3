@@ -1,25 +1,17 @@
-## Car Store B4A2V3
+## Blog Project with Authentication L2B4A3
 
-A Node-Express application to manage a car store and process customer blogs. The application supports features such as adding and updating car details, managing blogs, and calculating revenue using MongoDB aggregation pipelines.
+This project is a blogging platform designed for managing and sharing content. It includes features such as user authentication, blog creation, and editing while ensuring secure access with role-based permissions. The application is built using Node.js, Express, MongoDB, Zod Validation, JWT Token
 
 ## Features
 
-### Car Management:
+### Blog Management:
 
-- Add new cars with details such as brand, model, year, price, and quantity.
-- Update car details including price, quantity, and availability status.
-- Automatically update car availability (inStock) based on inventory quantity.
+- Create, update, and delete blogs.
+- Ensure users can only update their own blogs
 
-### blog Management:
+### Authentication:
 
-- Place blogs for cars with validation of inventory stock.
-- Calculate the total price for blogs dynamically.
-- Handle scenarios like insufficient stock with user-friendly error messages.
-
-### Revenue Calculation:
-
-- Compute total revenue from blogs using MongoDB aggregation pipelines.
-- Ensure accurate revenue tracking by validating stock availability during blog placement.
+- JWT-based secure access with role-based permissions.
 
 ## Getting Started
 
@@ -36,7 +28,7 @@ Follow the instructions below to set up the project locally.
 Clone the repository:
 
 ```bash
-git clone https://github.com/RittikaDev/car-store-B4A2V3.git
+git clone https://github.com/RittikaDev/blog-project-with-authentication-l2b4a3.git
 cd car-store-B4A2V3
 ```
 
@@ -51,8 +43,18 @@ Set up environment variables:
 - Create a .env file in the project root and configure secret keys
 
 ```bash
+NODE_ENV=development
 PORT=5000
-DATABASE_URL=mongodb+srv://rittikadev:rittikaadmin1234@cluster0.729wj.mongodb.net/assignment-two?retryWrites=true&w=majority&appName=Cluster0
+DATABASE_URL=mongodb+srv://rittikadev:rittikaadmin1234@cluster0.729wj.mongodb.net/assignment-three?retryWrites=true&w=majority&appName=Cluster0
+
+BCRYPT_SALT_ROUNDS=12
+DEFAULT_PASS=carstore!@#
+
+JWT_ACCESS_SECRET=e341fe176377614a6cbe4fb91cea0f7687c24193993f585532db58deac241dd4
+JWT_ACCESS_EXPIRES_IN=1d
+
+JWT_REFRESH_SECRET=e59d9de219a10a3bbe5ca930c6f5ad3fbf077dd9948a7539acb707ed92d4f56dba02d54a0a2b93ef123ae5fd403b145a04c3cd95413a74ac78254cb5fbccd871
+JWT_REFRESH_EXPIRES_IN=365d
 ```
 
 Run the application:
@@ -73,43 +75,87 @@ API Documentation
 
 ### API Endpoints
 
-#### Car Management
+#### User Endpoints
 
-- Create a Car:
-  - POST /api/cars
-  - Request Body: { "brand": "BMW", "model": "X5", "year": 2023, "price": 50000, "quantity": 10, "category": "SUV", "description": "Luxury SUV" }
-- Get All Cars:
-  - GET /api/cars?searchTerm=
-- Get Single Car
-  - GET /api/cars/:carId
-- Update a Car:
-  - PUT /api/cars/:carId
-  - Request Body: { "price": 55000, "quantity": 5 }
-- Delete a Car
-  - DELETE /api/cars/:carId
+- Create a User:
+  - POST /api/auth/register
+  - Request Body:
+    {
+    "name": "John Doe",
+    "email": "john@example.com",
+    "password": "securepassword"
+    }
+- Login:
+  - POST /api/auth/login
+  - Request Body:
+    {
+    "email": "john@example.com",
+    "password": "securepassword"
+    }
 
-#### blog Management
+#### Blog Management
 
 - Create an blog:
   - POST /api/blogs
-  - Request Body: { "email": "customer@example.com", "car": "<carId>", "quantity": 1, "totalPrice": 50000 }
-- Get Total Revenue
-  - GET /api/blogs/revenue
+  - Request Body:
+    {
+    "title": "My First Blog",
+    "content": "This is the content of my blog."
+    }
+- Update Blog
+  - PATCH /api/blogs/:id
+  - Request Body:
+    {
+    "title": "Updated Blog Title",
+    "content": "Updated content."
+    }
+- Delete Blog
+  - DELETE /api/blogs/:id
+  - Request Header:Authorization: Bearer <token>
+- Get All Blogs (Public)
+  - GET /api/blogs
+  - Example URL /api/blogs?search=technology&sortBy=createdAt&sortOrder=desc&filter=60b8f42f9c2a3c9b7cbd4f18
+
+#### Admin Actions
+
+- Block User
+  - PATCH /api/admin/users/:userId/block
+  - Request Header:Authorization: Bearer <admin_token>
+- Delete Blog
+  - DELETE /api/admin/blogs/:id
+  - Request Header:Authorization: Bearer <admin_token>
 
 ## Project Structure
 
 ```go
-car-store-B4A2V3/
+blog-project-with-authentication-l2b4a3/
 ├── src/
 │   ├── app/
+│   │   ├── builder/
+│   │   │   │
+│   │   │   ├── QueryBuilder.ts
+│   │   │
+│   │   ├── errors/
+│   │   │   │
+│   │   │   ├── AppErros.ts
+│   │   │   ├── handleCastError.ts
+│   │   │   ├── handleDuplicateError.ts
+│   │   │   ├── handleValidationError.ts
+│   │   │   ├── handleZodError.ts
+│   │   │
+│   │   ├── interface/
+│   │   │   │
+│   │   │   ├── errors.ts
+│   │   │   ├── index.d.ts
+│   │   │
+│   │   ├── middlewares/
+│   │   │   │
+│   │   │   ├── auth.ts
+│   │   │   ├── globalErrorHandler.ts
+│   │   │   ├── notFound.ts
+│   │   │   ├── ValidateRequest.ts
+│   │   │
 │   │   ├── modules/
-│   │   │   ├── car/
-│   │   │   │   ├── car.controller.ts
-│   │   │   │   ├── car.model.ts
-│   │   │   │   ├── car.route.ts
-│   │   │   │   ├── car.service.ts
-│   │   │   │   ├── car.interface.ts
-│   │   │   │   └── car.validation.ts
 │   │   │   │
 │   │   │   ├── blog/
 │   │   │   │   ├── blog.controllers.ts
@@ -118,6 +164,24 @@ car-store-B4A2V3/
 │   │   │   │   ├── blog.service.ts
 │   │   │   │   ├── blog.interface.ts
 │   │   │   │   └── blog.validation.ts
+│   │   │   │
+│   │   │   ├── user/
+│   │   │   │   ├── user.constant.ts
+│   │   │   │   ├── user.controllers.ts
+│   │   │   │   ├── user.interface.ts
+│   │   │   │   ├── user.model.ts
+│   │   │   │   ├── user.route.ts
+│   │   │   │   ├── user.service.ts
+│   │   │   │   └── user.validation.ts
+│   │   │   │   └── userAuth.utils.ts
+│   │   │
+│   │   ├─── utils/
+│   │   │    └── catchAsync.ts
+│   │   │    └── sendResponse.ts
+│   │   │
+│   │   ├─── config/
+│   │       └── index.ts
+│   │   │
 │   │   ├─── config/
 │   │       └── index.ts
 │   ├── app.ts
@@ -128,8 +192,3 @@ car-store-B4A2V3/
 ├── tsconfig.json
 └── README.md
 ```
-
-### Known Issues
-
-- Response Structure Update:
-  During the initial submission for recheck, a minor inconsistency was still present in the API response structure that I later realized. This issue has now been fixed and redeployed.
