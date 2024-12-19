@@ -35,13 +35,12 @@ const createUserIntoDB = async (payload: TUser) => {
   }
 };
 
-//user Login
-
+// USER LOGIN
 const userSignIntoDB = async (payload: TUserAuth) => {
   const user = await User.isUserExistByEmail(payload.email);
 
   if (!user) {
-    throw new AppError(httpStatus.NOT_FOUND, 'User is not registered');
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
   }
 
   if (typeof payload.password !== 'string') {
@@ -106,8 +105,24 @@ const refreshToken = async (token: string) => {
   };
 };
 
+// ADMIN PARTS
+const blockUserFromDB = async (id: string) => {
+  const deletedStudent = await User.findByIdAndUpdate(
+    id,
+    { isBlocked: true },
+    { new: true },
+  );
+
+  if (!deletedStudent)
+    throw new AppError(httpStatus.BAD_REQUEST, 'Failed to block the user');
+
+  return deletedStudent;
+};
+
 export const userServices = {
   createUserIntoDB,
   userSignIntoDB,
   refreshToken,
+
+  blockUserFromDB,
 };

@@ -1,7 +1,5 @@
 import cors from 'cors';
 import express, { Application, Request, Response } from 'express';
-// import { CarRoute } from './app/modules/car/car.route';
-// import { blogRoute } from './app/modules/blog/blog.route';
 
 import router from './app/routes';
 
@@ -18,12 +16,10 @@ app.use(cookieParser());
 app.use(cors({ origin: ['http://localhost:5173'] }));
 
 // ROUTES
-// app.use('/api/cars', CarRoute);
-// app.use('/api/blogs', blogRoute);
 app.use('/api/', router);
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Welcome to Car Store api server!');
+  res.send('Welcome to Blog Project with Authentication api server!');
 });
 
 app.use(globalErrorHandler);

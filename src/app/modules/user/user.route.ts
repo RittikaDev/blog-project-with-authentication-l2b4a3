@@ -2,6 +2,8 @@ import express from 'express';
 import { UserControllers } from './user.controllers';
 import { UserValidations } from './user.validation';
 import validateRequest from '../../middlewares/validateRequest';
+import auth from '../../middlewares/auth';
+import { USER_ROLE } from './user.constant';
 
 const router = express.Router();
 
@@ -23,12 +25,7 @@ router.post(
   UserControllers.refreshToken,
 );
 
+// ADMIN
+router.patch('/:id/block', auth(USER_ROLE.admin), UserControllers.blockAUser);
+
 export const UserRoutes = router;
-
-// import  express  from 'express';
-
-// const router = express.Router()
-
-// router.post('/',)
-
-// export const UserRoutes = router;

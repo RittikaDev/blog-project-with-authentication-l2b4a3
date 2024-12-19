@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, RequestHandler, Response } from 'express';
 
 // import { blogValidationSchema } from './blog.validation';
 import { BlogService } from './blog.service';
@@ -45,8 +45,8 @@ const createblog = catchAsync(async (req: Request, res: Response) => {
   const result = await BlogService.createBlogIntoDB(blogPayload);
 
   sendResponse(res, {
-    statusCode: httpStatus.CREATED,
     success: true,
+    statusCode: httpStatus.CREATED,
     message: 'Blog created successfully',
     data: result,
   });
@@ -55,7 +55,24 @@ const createblog = catchAsync(async (req: Request, res: Response) => {
 const updateBlog = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   const updateData = req.body;
-  const result = await BlogService.updateBlogIntoDB(id, updateData);
+  const user = req.user;
+
+  if (!user || !user.userEmail) {
+    throw new AppError(httpStatus.UNAUTHORIZED, 'User information is missing.');
+  }
+
+  const userEmail = await User.findOne({ email: user.userEmail });
+
+  if (!userEmail) throw new AppError(httpStatus.NOT_FOUND, 'User not found.');
+
+  // console.log(userEmail);
+
+  const toUpdateBlog = {
+    ...updateData,
+    author: userEmail._id,
+  };
+
+  const result = await BlogService.updateBlogIntoDB(id, toUpdateBlog);
   if (!result) {
     sendResponse(res, {
       statusCode: httpStatus.NOT_FOUND,
@@ -74,8 +91,19 @@ const updateBlog = catchAsync(async (req: Request, res: Response) => {
 
 const deleteABlog = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
-  console.log(req.params);
-  const result = await BlogService.deleteABlogFromDB(id);
+  // console.log(req.params);
+
+  const requestedUser = req.user;
+
+  if (!requestedUser || !requestedUser.userEmail) {
+    throw new AppError(httpStatus.UNAUTHORIZED, 'User information is missing.');
+  }
+
+  const user = await User.findOne({ email: requestedUser.userEmail });
+
+  if (!user) throw new AppError(httpStatus.NOT_FOUND, 'User not found.');
+
+  const result = await BlogService.deleteABlogFromDB(id, user._id, user.role);
 
   if (!result) {
     sendResponse(res, {
@@ -93,8 +121,28 @@ const deleteABlog = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getAllBlogs: RequestHandler = catchAsync(async (req, res) => {
+  const result = await BlogService.getAllBlogs(req.query);
+
+  if (result.length > 0)
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: 'Blogs fetched successfully',
+      data: result,
+    });
+  else
+    sendResponse(res, {
+      success: false,
+      statusCode: httpStatus.NOT_FOUND,
+      message: 'No blogs found',
+      data: [],
+    });
+});
+
 export const blogController = {
   createblog,
   updateBlog,
   deleteABlog,
+  getAllBlogs,
 };

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-this-alias */
 import { Schema, model, CallbackError } from 'mongoose';
 import { TUser, UserModel } from './user.interface';
 import bcrypt from 'bcrypt';
@@ -51,10 +50,6 @@ UserSchema.pre('save', async function (next) {
     }
   }
 
-  // user?.password = await bcrypt.hash(
-  //   user?.password,
-  //   Number(config.BCRYPT_SALT_ROUNDS),
-  // );
   next();
 });
 
