@@ -55,21 +55,21 @@ const createblog = catchAsync(async (req: Request, res: Response) => {
 const updateBlog = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   const updateData = req.body;
-  const user = req.user;
+  const userFromToken = req.user;
 
-  if (!user || !user.userEmail) {
+  if (!userFromToken || !userFromToken.userEmail) {
     throw new AppError(httpStatus.UNAUTHORIZED, 'User information is missing.');
   }
 
-  const userEmail = await User.findOne({ email: user.userEmail });
+  const user = await User.findOne({ email: userFromToken.userEmail });
 
-  if (!userEmail) throw new AppError(httpStatus.NOT_FOUND, 'User not found.');
+  if (!user) throw new AppError(httpStatus.NOT_FOUND, 'User not found.');
 
-  // console.log(userEmail);
+  // console.log(user);
 
   const toUpdateBlog = {
     ...updateData,
-    author: userEmail._id,
+    author: user._id,
   };
 
   const result = await BlogService.updateBlogIntoDB(id, toUpdateBlog);

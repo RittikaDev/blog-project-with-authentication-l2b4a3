@@ -25,9 +25,9 @@ const updateBlogIntoDB = async (id: string, payload: Partial<IBlog>) => {
   if (!isBlogExists) {
     throw new AppError(httpStatus.NOT_FOUND, 'This blog is not found');
   }
-  // console.log(isBlogExists.author, author);
+  // console.log(isBlogExists.author == author);
 
-  if (isBlogExists.author !== author)
+  if (!isBlogExists.author.equals(author))
     throw new AppError(
       httpStatus.UNAUTHORIZED,
       'You are not authorized to update this blog',
@@ -57,7 +57,7 @@ const deleteABlogFromDB = async (
     throw new AppError(httpStatus.NOT_FOUND, 'This blog is not found');
   }
 
-  if (userRole == USER_ROLE.user && isBlogExists.author !== userID)
+  if (userRole == USER_ROLE.user && !isBlogExists.author.equals(userID))
     throw new AppError(
       httpStatus.UNAUTHORIZED,
       'You are not authorized to delete this blog',
