@@ -54,15 +54,15 @@ const createblog = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
 const updateBlog = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const updateData = req.body;
-    const user = req.user;
-    if (!user || !user.userEmail) {
+    const userFromToken = req.user;
+    if (!userFromToken || !userFromToken.userEmail) {
         throw new AppError_1.default(http_status_codes_1.default.UNAUTHORIZED, 'User information is missing.');
     }
-    const userEmail = yield user_model_1.User.findOne({ email: user.userEmail });
-    if (!userEmail)
+    const user = yield user_model_1.User.findOne({ email: userFromToken.userEmail });
+    if (!user)
         throw new AppError_1.default(http_status_codes_1.default.NOT_FOUND, 'User not found.');
-    // console.log(userEmail);
-    const toUpdateBlog = Object.assign(Object.assign({}, updateData), { author: userEmail._id });
+    // console.log(user);
+    const toUpdateBlog = Object.assign(Object.assign({}, updateData), { author: user._id });
     const result = yield blog_service_1.BlogService.updateBlogIntoDB(id, toUpdateBlog);
     if (!result) {
         (0, sendResponse_1.default)(res, {

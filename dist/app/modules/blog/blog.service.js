@@ -43,8 +43,8 @@ const updateBlogIntoDB = (id, payload) => __awaiter(void 0, void 0, void 0, func
     if (!isBlogExists) {
         throw new AppError_1.default(http_status_codes_1.default.NOT_FOUND, 'This blog is not found');
     }
-    // console.log(isBlogExists.author, author);
-    if (isBlogExists.author !== author)
+    // console.log(isBlogExists.author == author);
+    if (!isBlogExists.author.equals(author))
         throw new AppError_1.default(http_status_codes_1.default.UNAUTHORIZED, 'You are not authorized to update this blog');
     const modifiedUpdateData = Object.assign({}, remainingServiceData);
     const result = yield blog_model_1.BlogModel.findByIdAndUpdate(id, modifiedUpdateData, {
@@ -60,7 +60,7 @@ const deleteABlogFromDB = (id, userID, userRole) => __awaiter(void 0, void 0, vo
     if (!isBlogExists) {
         throw new AppError_1.default(http_status_codes_1.default.NOT_FOUND, 'This blog is not found');
     }
-    if (userRole == user_constant_1.USER_ROLE.user && isBlogExists.author !== userID)
+    if (userRole == user_constant_1.USER_ROLE.user && !isBlogExists.author.equals(userID))
         throw new AppError_1.default(http_status_codes_1.default.UNAUTHORIZED, 'You are not authorized to delete this blog');
     const result = yield blog_model_1.BlogModel.deleteOne({ _id: id });
     return result;
